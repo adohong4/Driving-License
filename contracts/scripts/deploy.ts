@@ -4,11 +4,11 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account:", deployer.address);
 
-  const DrivingLicenseNFT = await ethers.getContractFactory("DrivingLicenseNFT");
-  const contract = await DrivingLicenseNFT.deploy(deployer.address);
+  const DrivingLicense = await ethers.getContractFactory("DrivingLicense");
+  const contract = await DrivingLicense.deploy(deployer.address);
   await contract.waitForDeployment();
 
-  console.log("DrivingLicenseNFT deployed to:", await contract.getAddress());
+  console.log("DrivingLicense deployed to:", await contract.getAddress());
 }
 
 main().catch((error) => {
