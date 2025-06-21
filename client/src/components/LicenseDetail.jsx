@@ -138,7 +138,7 @@ const LicenseDetail = ({ license, onBack }) => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
                 <button
                     onClick={onBack}
@@ -155,13 +155,25 @@ const LicenseDetail = ({ license, onBack }) => {
                 <div className="lg:col-span-2 space-y-6">
                     <div className="card">
                         <div className="flex items-start justify-between mb-6">
+                            {/* Thay thế phần header với icon */}
                             <div className="flex items-center gap-4">
-                                <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <CreditCard className="w-8 h-8 text-blue-600" />
+                                <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center overflow-hidden">
+                                    {license.ipfsHash ? (
+                                        <img
+                                            src={`https://gateway.pinata.cloud/ipfs/${license.ipfsHash}`}
+                                            alt={license.name}
+                                            className="w-full h-full object-cover rounded-lg"
+                                            onError={(e) => {
+                                                e.target.style.display = "none"
+                                                e.target.nextSibling.style.display = "flex"
+                                            }}
+                                        />
+                                    ) : null}
+                                    <CreditCard className={`w-8 h-8 text-blue-600 ${license.ipfsHash ? "hidden" : ""}`} />
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-gray-900">{license.name}</h3>
-                                    <p className="text-gray-600">Mã bằng lái: {license.licenseId}</p>
+                                    <p className="text-gray-600">Số/ No: {license.licenseId}</p>
                                 </div>
                             </div>
 
@@ -294,25 +306,44 @@ const LicenseDetail = ({ license, onBack }) => {
                         </div>
                     )}
 
-                    {/* File Preview */}
+                    {/* Thay thế phần File Preview */}
                     <div className="card">
-                        <h4 className="text-lg font-semibold text-gray-900 mb-4">File đính kèm</h4>
-                        <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                            <img
+                        <h4 className="text-lg font-semibold text-gray-900 mb-4">Ảnh bằng lái</h4>
+                        <div className="bg-gray-100 rounded-lg overflow-hidden">
+                            {/* <img
                                 src={`https://gateway.pinata.cloud/ipfs/${license.ipfsHash}`}
                                 alt="License Document"
-                                className="max-w-full max-h-full object-contain rounded-lg"
+                                className="w-full h-auto object-contain rounded-lg max-h-96"
                                 onError={(e) => {
                                     e.target.style.display = "none"
                                     e.target.nextSibling.style.display = "flex"
                                 }}
+                            /> */}
+                            <img
+                                src={`https://ipfs.io/ipfs/${license.ipfsHash}`}
+                                alt={license.name}
+                                className="w-full h-auto object-contain rounded-lg max-h-96"
                             />
-                            <div className="hidden flex-col items-center gap-2 text-gray-500">
+                            <div className="hidden flex-col items-center gap-2 text-gray-500 p-8">
                                 <FileText className="w-8 h-8" />
-                                <p className="text-sm">License Document</p>
+                                <p className="text-sm">Không thể tải ảnh</p>
                                 <p className="text-xs text-gray-400">IPFS: {license.ipfsHash}</p>
                             </div>
                         </div>
+
+                        {/* Link to view full image */}
+                        {/* <div className="mt-3 flex items-center justify-between">
+                            <p className="text-xs text-gray-500 font-mono">IPFS: {license.ipfsHash}</p>
+                            <a
+                                href={`https://gateway.pinata.cloud/ipfs/${license.ipfsHash}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700"
+                            >
+                                <ExternalLink className="w-4 h-4" />
+                                Xem ảnh gốc
+                            </a>
+                        </div> */}
                     </div>
                 </div>
             </div>

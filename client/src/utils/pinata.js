@@ -1,19 +1,40 @@
-// Mock Pinata service for demo purposes
-const PINATA_API_KEY = "demo_api_key"
-const PINATA_API_SECRET = "demo_api_secret"
-
-export const uploadToPinata = async (file) => {
+async function uploadToPinata(file, metadata = {}) {
     try {
-        // Simulate upload delay
-        await new Promise((resolve) => setTimeout(resolve, 2000))
+        const url = "https://api.pinata.cloud/pinning/pinFileToIPFS"
+        const formData = new FormData()
+        formData.append("file", file)
 
-        // Generate mock IPFS hash
-        const mockHash = `Qm${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`
+        const pinataMetadata = {
+            name: metadata.name || `license-document-${Date.now()}`,
+            keyvalues: {
+                type: "driving-license",
+                uploadedAt: new Date().toISOString(),
+                ...metadata.keyvalues,
+            },
+        }
+        formData.append("pinataMetadata", JSON.stringify(pinataMetadata))
 
-        console.log("Mock upload successful:", mockHash)
-        return mockHash
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                pinata_api_key: "c7817b9ff6f35987a4e2",
+                pinata_secret_api_key: "bf691a9f84ca722407c8fceb23610ca89efb4a24694627f9404b41154c9f289f",
+            },
+            body: formData,
+        })
+
+        const result = await response.json()
+        console.log("Pinata response:", result)
+
+        if (result.IpfsHash) {
+            return result.IpfsHash
+        } else {
+            throw new Error("Failed to upload to Pinata: " + JSON.stringify(result))
+        }
     } catch (error) {
-        console.error("Mock upload error:", error)
-        throw new Error("Failed to upload file to IPFS (Mock)")
+        console.error("Error uploading to Pinata:", error)
+        throw error
     }
 }
+
+export { uploadToPinata }
